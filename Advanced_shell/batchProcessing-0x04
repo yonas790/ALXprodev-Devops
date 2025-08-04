@@ -26,11 +26,16 @@ fetch_pokemon_data() {
   fi
 }
 
-echo "Starting parallel fetch for Pokémon..."
+echo "🚀 Starting parallel fetch for Pokémon..."
 
 for POKEMON in "${POKEMONS[@]}"; do
   fetch_pokemon_data "$POKEMON" &
 done
+
+jobs
+
+sleep 5
+jobs -p | xargs -r kill
 
 wait
 
