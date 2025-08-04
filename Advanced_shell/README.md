@@ -3,3 +3,4 @@
 ## 2. Batch Pokémon Data Retrieval
 ## 3. Summarize Pokémon Data
 ## 4. Error Handling and Retry Logic
+## 5. Parallel Data Fetching

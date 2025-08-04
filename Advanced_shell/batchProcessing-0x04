@@ -1,0 +1,37 @@
+#!/bin/bash
+
+POKEMONS=("bulbasaur" "ivysaur" "venusaur" "charmander" "charmeleon")
+API_BASE_URL="https://pokeapi.co/api/v2/pokemon"
+OUTPUT_DIR="pokemon_data_parallel"
+RETRY_LIMIT=3
+
+mkdir -p "$OUTPUT_DIR"
+
+fetch_pokemon_data() {
+  local POKEMON=$1
+  local ATTEMPT=1
+  local SUCCESS=false
+
+  while [ "$ATTEMPT" -le "$RETRY_LIMIT" ]; do
+    curl -s -f "$API_BASE_URL/$POKEMON" -o "$OUTPUT_DIR/$POKEMON.json" && SUCCESS=true && break
+    echo "[$POKEMON] Attempt $ATTEMPT failed. Retrying..."
+    sleep 1
+    ((ATTEMPT++))
+  done
+
+  if [ "$SUCCESS" = false ]; then
+    echo "[$POKEMON] Failed after $RETRY_LIMIT attempts" >> "$OUTPUT_DIR/error.log"
+  else
+    echo "[$POKEMON] Data fetched successfully"
+  fi
+}
+
+echo "Starting parallel fetch for Pokémon..."
+
+for POKEMON in "${POKEMONS[@]}"; do
+  fetch_pokemon_data "$POKEMON" &
+done
+
+wait
+
+echo "All parallel fetch tasks complete."
