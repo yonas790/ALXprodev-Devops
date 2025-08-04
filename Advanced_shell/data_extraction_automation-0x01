@@ -1,0 +1,21 @@
+#!/bin/bash
+SCRIPT_PATH="$0"
+if [ ! -s "$SCRIPT_PATH" ]; then
+  echo "Error: Script file '$SCRIPT_PATH' is empty or missing."
+  exit 1
+fi
+
+if [ ! -f data.json ]; then
+  echo "Error: data.json not found. Please run Task 0 first."
+  exit 1
+fi
+
+name=$(jq -r '.name' data.json | sed 's/.*/\u&/')  
+height_dm=$(jq -r '.height' data.json)            
+weight_hg=$(jq -r '.weight' data.json)          
+type=$(jq -r '.types[0].type.name' data.json | sed 's/.*/\u&/')  
+
+height_m=$(awk "BEGIN {printf \"%.1f\", $height_dm / 10}")
+weight_kg=$(awk "BEGIN {printf \"%.0f\", $weight_hg / 10}")
+
+echo "$name is of type $type, weighs ${weight_kg}kg, and is ${height_m}m tall."
